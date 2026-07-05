@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, ChevronLeft, Building2 } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Building2 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis } from "recharts";
 import { useApp } from "@/context/AppContext";
 import { useState } from "react";
@@ -160,17 +160,17 @@ export default function PemdaKependudukan() {
                 </CardTitle>
                 <CardDescription className="flex items-center gap-1.5 mt-1 text-xs">
                   <span>Sistem Wilayah</span>
-                  <span>➔</span>
+                  <ChevronRight className="w-3 h-3 text-slate-400" />
                   <span className={viewLevel === "kecamatan" ? "font-bold text-blue-600" : ""}>Kota</span>
                   {selectedKecamatan && (
                     <>
-                      <span>➔</span>
+                      <ChevronRight className="w-3 h-3 text-slate-400" />
                       <span className={viewLevel === "kelurahan" ? "font-bold text-blue-600" : ""}>{selectedKecamatan}</span>
                     </>
                   )}
                   {selectedKelurahan && (
                     <>
-                      <span>➔</span>
+                      <ChevronRight className="w-3 h-3 text-slate-400" />
                       <span className={viewLevel === "rt" ? "font-bold text-blue-600" : ""}>{selectedKelurahan}</span>
                     </>
                   )}
