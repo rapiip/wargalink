@@ -3,33 +3,48 @@
 import { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, FileText, Wallet, Bell, BarChart, LayoutDashboard, LogOut, Loader2, Menu, X } from "lucide-react";
+import { Users, FileText, Wallet, Bell, BarChart, LayoutDashboard, LogOut, Loader2, Menu, X, MessageSquare, Sun, Moon } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
-import { AppLogo } from "@/components/AppLogo";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { AppLogo } from "@/components/AppLogo";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  const { currentUser, isLoaded, logoutUser, notifications, markNotifikasiRead, clearAllNotifikasi } = useApp();
+  const { currentUser, isLoaded, logoutUser, notifications, markNotifikasiRead, clearAllNotifikasi, aduanList } = useApp();
   const router = useRouter();
   const pathname = usePathname();
   const [showNotif, setShowNotif] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState("light");
 
   const adminNotifs = notifications.filter(
     (n) => n.targetRole === "Admin RT/RW" || n.targetRole === "All"
   );
   const unreadCount = adminNotifs.filter((n) => !n.read).length;
+  const pendingAduanCount = aduanList ? aduanList.filter((a) => a.status === "Diajukan").length : 0;
 
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Data Warga", href: "/admin/warga", icon: Users },
     { name: "Surat Menyurat", href: "/admin/surat", icon: FileText },
     { name: "Iuran & Keuangan", href: "/admin/keuangan", icon: Wallet },
+    { name: "Aduan Warga", href: "/admin/aduan", icon: MessageSquare, badge: true },
     { name: "Pengumuman", href: "/admin/pengumuman", icon: Bell },
     { name: "Laporan", href: "/admin/laporan", icon: BarChart },
   ];
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("wl_theme") || "light";
+    setTheme(storedTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    localStorage.setItem("wl_theme", nextTheme);
+    toast.success(`Mode ${nextTheme === "dark" ? "Gelap" : "Terang"} diaktifkan.`);
+  };
 
   // Active check — exact for /admin, startsWith for children
   const isActive = (href: string) => {
@@ -80,14 +95,23 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <Link
               href={item.href}
               onClick={onNavigate}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+              className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
                 active
                   ? "bg-primary text-white shadow-md shadow-primary/30 translate-x-0"
                   : "text-slate-600 hover:bg-white hover:shadow-sm hover:text-primary hover:translate-x-1"
               }`}
             >
-              <Icon className="w-5 h-5 shrink-0" />
-              {item.name}
+              <div className="flex items-center gap-3">
+                <Icon className="w-5 h-5 shrink-0" />
+                {item.name}
+              </div>
+              {item.badge && pendingAduanCount > 0 && (
+                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                  active ? "bg-white text-primary" : "bg-red-500 text-white"
+                }`}>
+                  {pendingAduanCount}
+                </span>
+              )}
             </Link>
           </li>
         );
@@ -96,7 +120,91 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-transparent flex">
+    <div className={`min-h-screen bg-transparent flex ${theme === "dark" ? "dark bg-slate-900" : "bg-slate-50"}`}>
+      {theme === "dark" && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          .dark {
+            background-color: #0b0f19 !important;
+          }
+          .dark .bg-white, 
+          .dark .bg-white\\/85,
+          .dark .bg-white\\/80,
+          .dark .bg-white\\/90,
+          .dark .bg-white\\/95,
+          .dark .bg-white\\/30,
+          .dark .bg-white\\/40,
+          .dark aside,
+          .dark header,
+          .dark .bg-slate-50\\/20,
+          .dark .bg-slate-50\\/50 {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+          }
+          .dark .bg-slate-50 {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+          }
+          .dark .text-slate-900, 
+          .dark .text-slate-800, 
+          .dark .text-slate-700,
+          .dark .text-slate-650,
+          .dark .text-slate-600 {
+            color: #f1f5f9 !important;
+          }
+          .dark .text-slate-500, 
+          .dark .text-slate-400 {
+            color: #94a3b8 !important;
+          }
+          .dark .border-slate-100, 
+          .dark .border-slate-200, 
+          .dark .border {
+            border-color: #334155 !important;
+          }
+          .dark input, 
+          .dark select, 
+          .dark textarea {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+          }
+          .dark select option {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+          }
+          .dark .hover\\:bg-slate-50:hover,
+          .dark .hover\\:bg-white:hover {
+            background-color: #334155 !important;
+            color: #f8fafc !important;
+          }
+          .dark table, 
+          .dark tr,
+          .dark th,
+          .dark td {
+            border-color: #334155 !important;
+            color: #f1f5f9 !important;
+          }
+          .dark table th {
+            background-color: #0f172a !important;
+            color: #94a3b8 !important;
+          }
+          .dark .bg-blue-50 {
+            background-color: rgba(30, 58, 138, 0.3) !important;
+            color: #93c5fd !important;
+            border-color: rgba(30, 58, 138, 0.5) !important;
+          }
+          .dark .text-primary {
+            color: #60a5fa !important;
+          }
+          .dark .bg-primary {
+            background-color: #2563eb !important;
+            color: white !important;
+          }
+          .dark .text-slate-800 {
+            color: #f1f5f9 !important;
+          }
+        ` }} />
+      )}
       {/* Desktop Floating Sidebar */}
       <div className="hidden md:flex flex-col w-72 p-4 pr-0">
         <aside className="flex-1 bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl flex flex-col overflow-hidden">
@@ -160,6 +268,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <h1 className="text-xl font-bold text-slate-800 tracking-tight hidden md:block">Dashboard RT 01 / RW 05</h1>
           </div>
           <div className="flex items-center gap-4">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 text-slate-500 bg-white hover:text-primary shadow-sm border border-slate-100 rounded-full transition-all hover:shadow-md hover:-translate-y-0.5"
+              aria-label="Toggle Tema"
+            >
+              {theme === "dark" ? <Sun className="w-5 h-5 text-amber-500" /> : <Moon className="w-5 h-5 text-slate-600" />}
+            </button>
             <div className="relative">
               <button
                 className="p-2.5 text-slate-500 bg-white hover:text-primary shadow-sm border border-slate-100 rounded-full transition-all hover:shadow-md hover:-translate-y-0.5 relative"

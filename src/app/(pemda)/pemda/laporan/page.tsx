@@ -155,7 +155,65 @@ export default function PemdaLaporan() {
       </Card>
 
       <Card className={`min-h-[400px] flex items-center justify-center border-dashed transition-all ${generated ? "bg-white border-blue-200" : "bg-slate-50"}`}>
-        {generated ? (
+        {generating ? (
+          <div className="w-full p-6 space-y-6 animate-pulse">
+            {/* Header Skeleton */}
+            <div className="border-b pb-4 flex justify-between items-center">
+              <div className="space-y-2">
+                <div className="h-6 bg-slate-350 rounded w-48 bg-slate-200"></div>
+                <div className="h-4 bg-slate-300 rounded w-64 bg-slate-200"></div>
+              </div>
+              <div className="h-5 bg-slate-300 rounded w-20 bg-slate-200"></div>
+            </div>
+            
+            {/* Stat Cards Skeleton */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-slate-100/50 rounded-2xl p-4 text-center border space-y-2">
+                  <div className="h-3 bg-slate-300 rounded w-16 mx-auto bg-slate-200"></div>
+                  <div className="h-5 bg-slate-350 rounded w-24 mx-auto bg-slate-200"></div>
+                </div>
+              ))}
+            </div>
+
+            {/* Visualisations Skeleton */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="border border-slate-100 rounded-2xl overflow-hidden bg-white">
+                <div className="h-10 bg-slate-50 border-b px-4 py-2 flex items-center">
+                  <div className="h-4 bg-slate-300 rounded w-28 bg-slate-200"></div>
+                </div>
+                <div className="p-4 h-[220px] flex flex-col justify-end gap-2 bg-slate-50/20">
+                  <div className="flex items-end justify-between h-[150px] w-full px-4 border-b pb-1">
+                    <div className="w-8 bg-slate-200 rounded-t h-[40px]"></div>
+                    <div className="w-8 bg-slate-200 rounded-t h-[80px]"></div>
+                    <div className="w-8 bg-slate-200 rounded-t h-[120px]"></div>
+                    <div className="w-8 bg-slate-200 rounded-t h-[60px]"></div>
+                  </div>
+                  <div className="flex justify-between w-full px-2">
+                    <div className="h-3 bg-slate-200 rounded w-10"></div>
+                    <div className="h-3 bg-slate-200 rounded w-10"></div>
+                    <div className="h-3 bg-slate-200 rounded w-10"></div>
+                    <div className="h-3 bg-slate-200 rounded w-10"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border border-slate-100 rounded-2xl overflow-hidden bg-white">
+                <div className="h-10 bg-slate-50 border-b px-4 py-2 flex items-center">
+                  <div className="h-4 bg-slate-300 rounded w-28 bg-slate-200"></div>
+                </div>
+                <div className="p-4 space-y-3 bg-slate-50/20">
+                  {[1, 2, 3].map((j) => (
+                    <div key={j} className="flex justify-between items-center border-b pb-2">
+                      <div className="h-4 bg-slate-205 rounded w-32 bg-slate-200"></div>
+                      <div className="h-4 bg-slate-300 rounded w-16 bg-slate-200"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : generated ? (
           <div className="w-full p-6 space-y-6">
             <div className="border-b pb-4 flex justify-between items-center">
               <div>
@@ -180,7 +238,7 @@ export default function PemdaLaporan() {
                 </div>
               ))}
             </div>
-
+ 
             {/* Real Chart & Table Preview Section */}
             <div className="grid gap-6 md:grid-cols-2">
               {/* Chart Preview */}
@@ -209,10 +267,10 @@ export default function PemdaLaporan() {
                       </BarChart>
                     </ResponsiveContainer>
                   )}
-
+ 
                 </CardContent>
               </Card>
-
+ 
               {/* Table Preview */}
               <Card className="border border-slate-100 shadow shadow-slate-200/50 rounded-2xl overflow-hidden">
                 <CardHeader className="pb-2 bg-slate-50/50 border-b">
@@ -246,7 +304,7 @@ export default function PemdaLaporan() {
                 </CardContent>
               </Card>
             </div>
-            
+             
             <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Dokumen Terenkripsi WargaLink · Konfidensial Pemerintah Kota
             </p>

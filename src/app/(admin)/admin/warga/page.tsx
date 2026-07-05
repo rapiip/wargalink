@@ -11,20 +11,33 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useApp, Warga } from "@/context/AppContext";
+import { Download, Edit, Trash2 } from "lucide-react";
 
 export default function AdminWarga() {
-  const { daftarWarga, tambahWarga } = useApp();
+  const { daftarWarga, tambahWarga, updateWarga, hapusWarga } = useApp();
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterRT, setFilterRT] = useState("all");
   const [openDetail, setOpenDetail] = useState<{ open: boolean; warga: Warga | null }>({ open: false, warga: null });
   const [openTambah, setOpenTambah] = useState(false);
+  const [openEdit, setOpenEdit] = useState<{ open: boolean; warga: Warga | null }>({ open: false, warga: null });
 
   // Form states
   const [namaKK, setNamaKK] = useState("");
   const [nikKK, setNikKK] = useState("");
   const [alamatKK, setAlamatKK] = useState("");
   const [phoneKK, setPhoneKK] = useState("");
+  const [rtKK, setRtKK] = useState("01");
+  const [statusKK, setStatusKK] = useState("Tetap");
+
+  // Edit states
+  const [editNama, setEditNama] = useState("");
+  const [editNIK, setEditNIK] = useState("");
+  const [editStatus, setEditStatus] = useState("");
+  const [editRT, setEditRT] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editAlamat, setEditAlamat] = useState("");
+  const [editKK, setEditKK] = useState("");
 
   const filtered = daftarWarga.filter(
     (w) =>
@@ -45,8 +58,8 @@ export default function AdminWarga() {
       kk: nikKK.substring(0, 16),
       nama: namaKK,
       nik: nikKK,
-      status: "Tetap",
-      rt: "01",
+      status: statusKK,
+      rt: rtKK,
       phone: phoneKK,
       alamat: alamatKK,
     });
@@ -56,11 +69,70 @@ export default function AdminWarga() {
     setNikKK("");
     setAlamatKK("");
     setPhoneKK("");
-    toast.success("Data KK baru berhasil ditambahkan ke sistem.");
+    setRtKK("01");
+    setStatusKK("Tetap");
+    toast.success("Data warga baru berhasil ditambahkan ke sistem.");
   };
 
-  const handleFilter = () => {
-    toast.info("Fitur filter lanjutan akan segera tersedia.", { description: "Saat ini Anda dapat menggunakan kolom pencarian di atas." });
+  const startEdit = (warga: Warga) => {
+    setEditNama(warga.nama);
+    setEditNIK(warga.nik);
+    setEditStatus(warga.status);
+    setEditRT(warga.rt);
+    setEditPhone(warga.phone);
+    setEditAlamat(warga.alamat);
+    setEditKK(warga.kk);
+    setOpenEdit({ open: true, warga });
+  };
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!openEdit.warga) return;
+    updateWarga(openEdit.warga.id, {
+      nama: editNama,
+      nik: editNIK,
+      status: editStatus,
+      rt: editRT,
+      phone: editPhone,
+      alamat: editAlamat,
+      kk: editKK,
+    });
+    setOpenEdit({ open: false, warga: null });
+    toast.success("Data warga berhasil diperbarui.");
+  };
+
+  const handleDeleteWarga = (id: number, nama: string) => {
+    if (confirm(`Apakah Anda yakin ingin menghapus data warga ${nama}?`)) {
+      hapusWarga(id);
+      toast.success(`Data warga ${nama} berhasil dihapus.`);
+    }
+  };
+
+  const handleExportCSV = () => {
+    if (filtered.length === 0) {
+      toast.warning("Tidak ada data untuk diekspor.");
+      return;
+    }
+    const headers = ["Nama Lengkap", "No. KK", "NIK", "RT", "Status Domisili", "No. Telepon", "Alamat"];
+    const rows = filtered.map((w) => [
+      w.nama,
+      w.kk,
+      w.nik,
+      w.rt,
+      w.status,
+      w.phone,
+      w.alamat
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+      + [headers.join(","), ...rows.map((row) => row.map((val) => `"${val}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Data_Warga_RT_${filterRT}_Status_${filterStatus}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Data warga berhasil diekspor ke CSV!");
   };
 
   return (
@@ -70,10 +142,16 @@ export default function AdminWarga() {
           <h2 className="text-2xl font-bold tracking-tight text-slate-900">Data Warga</h2>
           <p className="text-slate-500">Kelola daftar warga berdasarkan Kartu Keluarga (KK).</p>
         </div>
-        <Button className="flex items-center gap-2" onClick={() => setOpenTambah(true)}>
-          <Plus className="w-4 h-4" />
-          Tambah KK Baru
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex items-center gap-2 rounded-xl" onClick={handleExportCSV}>
+            <Download className="w-4 h-4" />
+            Ekspor CSV
+          </Button>
+          <Button className="flex items-center gap-2 rounded-xl shadow-lg shadow-blue-500/10" onClick={() => setOpenTambah(true)}>
+            <Plus className="w-4 h-4" />
+            Tambah Warga Baru
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -140,14 +218,30 @@ export default function AdminWarga() {
                       {warga.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right flex justify-end gap-1.5">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-primary hover:text-primary/80"
+                      className="text-primary hover:text-primary/80 h-8 font-bold"
                       onClick={() => setOpenDetail({ open: true, warga })}
                     >
                       Detail
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-amber-600 hover:text-amber-700 h-8 w-8 hover:bg-amber-50"
+                      onClick={() => startEdit(warga)}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-600 hover:text-red-700 h-8 w-8 hover:bg-red-50"
+                      onClick={() => handleDeleteWarga(warga.id, warga.nama)}
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -295,9 +389,126 @@ export default function AdminWarga() {
                 onChange={(e) => setPhoneKK(e.target.value)}
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="rt-kk">Rukun Tetangga (RT)</Label>
+                <select
+                  id="rt-kk"
+                  value={rtKK}
+                  onChange={(e) => setRtKK(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-slate-800"
+                >
+                  <option value="01">RT 01</option>
+                  <option value="02">RT 02</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="status-kk">Status Domisili</Label>
+                <select
+                  id="status-kk"
+                  value={statusKK}
+                  onChange={(e) => setStatusKK(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-slate-800"
+                >
+                  <option value="Tetap">Tetap</option>
+                  <option value="Kontrak">Kontrak</option>
+                </select>
+              </div>
+            </div>
             <DialogFooter className="pt-2">
               <Button type="button" variant="outline" className="rounded-xl" onClick={() => setOpenTambah(false)}>Batal</Button>
               <Button type="submit" className="rounded-xl">Simpan Data</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal Edit Warga */}
+      <Dialog open={openEdit.open} onOpenChange={(open) => setOpenEdit({ ...openEdit, open })}>
+        <DialogContent className="sm:max-w-md rounded-2xl bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-slate-800">Ubah Data Warga</DialogTitle>
+            <DialogDescription>Perbarui informasi kependudukan warga.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSaveEdit} className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="edit-nama">Nama Warga</Label>
+              <Input
+                id="edit-nama"
+                required
+                value={editNama}
+                onChange={(e) => setEditNama(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-nik">NIK</Label>
+              <Input
+                id="edit-nik"
+                required
+                maxLength={16}
+                className="font-mono"
+                value={editNIK}
+                onChange={(e) => setEditNIK(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-kk">Nomor KK</Label>
+              <Input
+                id="edit-kk"
+                required
+                maxLength={16}
+                className="font-mono"
+                value={editKK}
+                onChange={(e) => setEditKK(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-alamat">Alamat Rumah</Label>
+              <Input
+                id="edit-alamat"
+                required
+                value={editAlamat}
+                onChange={(e) => setEditAlamat(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-phone">Nomor HP</Label>
+              <Input
+                id="edit-phone"
+                required
+                value={editPhone}
+                onChange={(e) => setEditPhone(e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-rt">RT</Label>
+                <select
+                  id="edit-rt"
+                  value={editRT}
+                  onChange={(e) => setEditRT(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-slate-800"
+                >
+                  <option value="01">RT 01</option>
+                  <option value="02">RT 02</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-status">Status Domisili</Label>
+                <select
+                  id="edit-status"
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-slate-800"
+                >
+                  <option value="Tetap">Tetap</option>
+                  <option value="Kontrak">Kontrak</option>
+                </select>
+              </div>
+            </div>
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="outline" className="rounded-xl" onClick={() => setOpenEdit({ open: false, warga: null })}>Batal</Button>
+              <Button type="submit" className="rounded-xl">Simpan Perubahan</Button>
             </DialogFooter>
           </form>
         </DialogContent>

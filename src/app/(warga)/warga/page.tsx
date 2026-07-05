@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Wallet, Bell, Clock, FileText, ArrowRight } from "lucide-react";
+import { Wallet, Bell, Clock, FileText, ArrowRight, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StaggerContainer, StaggerItem } from "@/components/ui/animated-container";
@@ -108,18 +108,24 @@ export default function WargaHome() {
           <div className="flex items-center justify-between pt-2 pb-2">
             <h3 className="font-bold text-slate-800 tracking-tight">Layanan Warga</h3>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Link href="/warga/surat" className="group bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white/60 shadow-lg shadow-slate-200/50 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 hover:shadow-xl hover:bg-white transition-all duration-300 text-center">
-              <div className="bg-blue-50 p-3.5 rounded-2xl text-blue-600 group-hover:scale-110 transition-transform duration-300">
-                <FileText className="w-6 h-6" />
+          <div className="grid grid-cols-3 gap-3">
+            <Link href="/warga/surat" className="group bg-white/80 backdrop-blur-sm p-3.5 rounded-2xl border border-white/60 shadow-lg shadow-slate-200/50 flex flex-col items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-xl hover:bg-white transition-all duration-300 text-center">
+              <div className="bg-blue-50 p-2.5 rounded-xl text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                <FileText className="w-5 h-5" />
               </div>
-              <span className="text-sm font-bold text-slate-700">Pengajuan Surat</span>
+              <span className="text-xs font-bold text-slate-700 leading-tight">Pengajuan Surat</span>
             </Link>
-            <Link href="/warga/pengumuman" className="group bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white/60 shadow-lg shadow-slate-200/50 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 hover:shadow-xl hover:bg-white transition-all duration-300 text-center">
-              <div className="bg-amber-50 p-3.5 rounded-2xl text-amber-600 group-hover:scale-110 transition-transform duration-300">
-                <Bell className="w-6 h-6" />
+            <Link href="/warga/aduan" className="group bg-white/80 backdrop-blur-sm p-3.5 rounded-2xl border border-white/60 shadow-lg shadow-slate-200/50 flex flex-col items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-xl hover:bg-white transition-all duration-300 text-center">
+              <div className="bg-emerald-50 p-2.5 rounded-xl text-emerald-600 group-hover:scale-110 transition-transform duration-300">
+                <MessageSquare className="w-5 h-5" />
               </div>
-              <span className="text-sm font-bold text-slate-700">Info & Agenda</span>
+              <span className="text-xs font-bold text-slate-700 leading-tight">Aduan Warga</span>
+            </Link>
+            <Link href="/warga/pengumuman" className="group bg-white/80 backdrop-blur-sm p-3.5 rounded-2xl border border-white/60 shadow-lg shadow-slate-200/50 flex flex-col items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-xl hover:bg-white transition-all duration-300 text-center">
+              <div className="bg-amber-50 p-2.5 rounded-xl text-amber-600 group-hover:scale-110 transition-transform duration-300">
+                <Bell className="w-5 h-5" />
+              </div>
+              <span className="text-xs font-bold text-slate-700 leading-tight">Info & Agenda</span>
             </Link>
           </div>
         </StaggerItem>

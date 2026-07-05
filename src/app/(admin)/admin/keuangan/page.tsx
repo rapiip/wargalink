@@ -10,7 +10,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recha
 import { toast } from "sonner";
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
-import { Check, X, Wallet, ArrowUpRight, ArrowDownRight, Settings, AlertCircle } from "lucide-react";
+import { Check, X, Wallet, ArrowUpRight, ArrowDownRight, Settings, AlertCircle, Download } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function AdminKeuangan() {
@@ -29,6 +29,49 @@ export default function AdminKeuangan() {
 
   // Settings & manual transaction state
   const [tarifInput, setTarifInput] = useState(nominalIuran.toString());
+
+  const handleExportKasCSV = () => {
+    if (transaksiList.length === 0) {
+      toast.warning("Tidak ada transaksi untuk diekspor.");
+      return;
+    }
+    const headers = ["Tanggal", "Keterangan", "Tipe", "Nominal"];
+    const rows = transaksiList.map((tx) => [
+      tx.tanggal,
+      tx.keterangan,
+      tx.tipe,
+      tx.nominal
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+      + [headers.join(","), ...rows.map((row) => row.map((val) => `"${val}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Buku_Kas_RT_WargaLink.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Buku Kas berhasil diekspor ke CSV!");
+  };
+
+  const handleExportTagihanCSV = () => {
+    const headers = ["Nama (KK)", "Nominal", "Status Tagihan"];
+    const rows = tagihanLain.map((t) => [
+      t.kk,
+      t.nominal,
+      iuranAktif ? t.status : "DITIADAKAN"
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+      + [headers.join(","), ...rows.map((row) => row.map((val) => `"${val}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Status_Tagihan_Iuran_Juni_2026.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Laporan tagihan warga berhasil diekspor ke CSV!");
+  };
   const [selectedBukti, setSelectedBukti] = useState<{ open: boolean; tagihan: any | null }>({ open: false, tagihan: null });
   
   const [txTipe, setTxTipe] = useState("pemasukan");
@@ -340,8 +383,12 @@ export default function AdminKeuangan() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Status Tagihan Iuran Warga (Juni 2026)</CardTitle>
+          <CardHeader className="flex flex-row justify-between items-center py-4">
+            <CardTitle className="text-base font-bold text-slate-800">Status Tagihan Iuran Warga (Juni 2026)</CardTitle>
+            <Button variant="outline" size="sm" className="flex items-center gap-1.5 rounded-xl text-xs font-semibold border-slate-200" onClick={handleExportTagihanCSV}>
+              <Download className="w-3.5 h-3.5" />
+              Ekspor CSV
+            </Button>
           </CardHeader>
           <CardContent className="p-0 max-h-[300px] overflow-y-auto">
             <Table>
@@ -396,9 +443,15 @@ export default function AdminKeuangan() {
 
       {/* Riwayat Transaksi Buku Kas RT */}
       <Card className="border border-slate-200/80 shadow-md">
-        <CardHeader>
-          <CardTitle className="text-lg font-bold text-slate-800">Riwayat Transaksi Buku Kas RT</CardTitle>
-          <p className="text-xs text-slate-500 font-medium">Log historis pencatatan kas masuk dan kas keluar lingkungan RT.</p>
+        <CardHeader className="flex flex-row justify-between items-center py-4">
+          <div>
+            <CardTitle className="text-lg font-bold text-slate-800">Riwayat Transaksi Buku Kas RT</CardTitle>
+            <p className="text-xs text-slate-500 font-medium">Log historis pencatatan kas masuk dan kas keluar lingkungan RT.</p>
+          </div>
+          <Button variant="outline" size="sm" className="flex items-center gap-1.5 rounded-xl text-xs font-semibold border-slate-200" onClick={handleExportKasCSV}>
+            <Download className="w-3.5 h-3.5" />
+            Ekspor CSV
+          </Button>
         </CardHeader>
         <CardContent className="p-0">
           <div className="max-h-[350px] overflow-y-auto">
@@ -459,47 +512,64 @@ export default function AdminKeuangan() {
           
           {selectedBukti.tagihan && (
             <div className="py-2">
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 font-sans relative overflow-hidden text-slate-800 shadow-inner">
-                {/* Header Struk */}
-                <div className="text-center pb-4 border-b border-dashed border-slate-200">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full font-bold text-lg mb-2 shadow">
-                    WL
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden font-sans relative text-slate-800 shadow-md">
+                {/* BCA Style Top Header bar */}
+                <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white px-5 py-3.5 flex justify-between items-center">
+                  <div className="text-left">
+                    <span className="text-[10px] font-black tracking-widest uppercase text-blue-200 leading-none">m-Transfer</span>
+                    <h5 className="font-extrabold text-xs mt-0.5">TRANSFER BERHASIL</h5>
                   </div>
-                  <h4 className="font-extrabold text-base tracking-tight">WargaLink Pay</h4>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Bukti Transfer Sukses</p>
-                </div>
-                
-                {/* Details */}
-                <div className="py-4 space-y-3.5 text-xs">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 font-semibold">Pengirim (Warga)</span>
-                    <span className="font-bold text-slate-800">{selectedBukti.tagihan.kk}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 font-semibold">Periode Tagihan</span>
-                    <span className="font-bold text-slate-800">{selectedBukti.tagihan.tagihan}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 font-semibold">Bank Tujuan</span>
-                    <span className="font-bold text-slate-800">Bank Mandiri (RT 01 Kas)</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 font-semibold">Nomor Referensi</span>
-                    <span className="font-mono font-bold text-slate-700">WL-TX-92847104</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 font-semibold">Metode Pembayaran</span>
-                    <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-wider text-[9px]">QRIS Mobile-Banking</span>
-                  </div>
-                  <div className="border-t border-dashed border-slate-200 pt-3 flex justify-between items-center">
-                    <span className="text-slate-600 font-extrabold text-sm">Total Transfer</span>
-                    <span className="font-black text-slate-900 text-lg">Rp {selectedBukti.tagihan.nominal.toLocaleString("id-ID")}</span>
+                  <div className="bg-white/10 px-2.5 py-1 rounded text-[9px] font-bold border border-white/20">
+                    BCA mobile
                   </div>
                 </div>
 
-                {/* Stempel Bulat Berhasil */}
-                <div className="absolute bottom-2 right-4 w-20 h-20 border-4 border-emerald-500/30 rounded-full flex items-center justify-center font-bold text-emerald-500/40 text-[9px] uppercase tracking-widest transform rotate-12 select-none pointer-events-none">
-                  Lunas RT
+                <div className="p-5 space-y-4 text-xs bg-white">
+                  {/* Sender Details */}
+                  <div className="pb-3 border-b border-slate-100 flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PENGIRIM</span>
+                      <p className="font-extrabold text-slate-800 mt-0.5">{selectedBukti.tagihan.kk}</p>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 font-semibold bg-slate-100 px-2 py-0.5 rounded">Rek. ****7890</span>
+                  </div>
+
+                  {/* Transaction Details */}
+                  <div className="space-y-2.5 pt-1">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400 font-medium">Bank Penerima</span>
+                      <span className="font-bold text-slate-700">MANDIRI (KAS RT 01)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400 font-medium">Periode Tagihan</span>
+                      <span className="font-bold text-slate-700">{selectedBukti.tagihan.tagihan}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400 font-medium">No. Referensi</span>
+                      <span className="font-mono font-bold text-slate-700">WS-TX-92847104</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400 font-medium">Tipe Pembayaran</span>
+                      <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 text-[9px] font-black uppercase tracking-wider">QRIS AUTOPAY</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400 font-medium">Waktu Transaksi</span>
+                      <span className="font-semibold text-slate-600">24 Juni 2026, 19:48 WIB</span>
+                    </div>
+                  </div>
+
+                  {/* Nominal Total */}
+                  <div className="border-t border-double border-slate-200 pt-3.5 mt-2 flex justify-between items-center">
+                    <span className="text-slate-500 font-bold text-sm">JUMLAH TRANSFER</span>
+                    <span className="font-black text-blue-600 text-xl">Rp {selectedBukti.tagihan.nominal.toLocaleString("id-ID")}</span>
+                  </div>
+                </div>
+
+                {/* Stempel Bulat Berhasil APPROVED */}
+                <div className="absolute bottom-16 right-6 w-24 h-24 border-double border-4 border-emerald-500/50 rounded-full flex flex-col items-center justify-center font-black text-emerald-500/60 text-[8px] uppercase tracking-widest transform rotate-[-12deg] select-none pointer-events-none bg-emerald-50/5 backdrop-blur-[0.5px]">
+                  <span className="text-[6px] tracking-widest leading-none font-extrabold text-emerald-500/40">RT 01/05</span>
+                  <span className="text-[10px] font-black border-y border-emerald-500/50 py-0.5 my-0.5">APPROVED</span>
+                  <span className="text-[5px] tracking-widest leading-none font-bold text-emerald-500/40">WARGALINK</span>
                 </div>
               </div>
             </div>

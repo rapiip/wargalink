@@ -70,6 +70,18 @@ export interface Notification {
   read: boolean;
 }
 
+export interface Aduan {
+  id: number;
+  pemohon: string;
+  judul: string;
+  deskripsi: string;
+  kategori: string;
+  tanggal: string;
+  status: "Diajukan" | "Diproses" | "Selesai" | "Ditolak";
+  foto?: string;
+  tanggapan?: string;
+}
+
 interface AppContextType {
   nominalIuran: number;
   iuranAktif: boolean;
@@ -97,6 +109,11 @@ interface AppContextType {
   tambahNotifikasi: (targetRole: "Warga" | "Admin RT/RW" | "Pemda" | "All", title: string, message: string) => void;
   markNotifikasiRead: (id: number) => void;
   clearAllNotifikasi: (targetRole: "Warga" | "Admin RT/RW" | "Pemda" | "All") => void;
+  aduanList: Aduan[];
+  tambahAduan: (judul: string, deskripsi: string, kategori: string, pemohon: string, foto?: string) => void;
+  updateStatusAduan: (id: number, status: "Diajukan" | "Diproses" | "Selesai" | "Ditolak", tanggapan?: string) => void;
+  updateWarga: (id: number, warga: Partial<Warga>) => void;
+  hapusWarga: (id: number) => void;
   isLoaded: boolean;
 }
 
@@ -153,6 +170,11 @@ const INITIAL_NOTIFICATIONS: Notification[] = [
   { id: 2, targetRole: "Admin RT/RW", title: "Sistem RT Aktif", message: "WargaLink RT 01 RW 05 siap untuk melakukan pembukuan keuangan dan persetujuan surat.", time: "1 Hari Lalu", read: false }
 ];
 
+const INITIAL_ADUAN: Aduan[] = [
+  { id: 1, pemohon: "Budi Santoso", judul: "Lampu Jalan Mati di Gang 3", deskripsi: "Lampu jalan di Gang 3 mati sejak 3 hari lalu, membuat lingkungan gelap di malam hari.", kategori: "Fasilitas Umum", tanggal: "22 Jun 2026", status: "Diproses", tanggapan: "Sedang dikoordinasikan dengan petugas PLN." },
+  { id: 2, pemohon: "Ahmad Wijaya", judul: "Sampah Menumpuk di Depan Gapura", deskripsi: "Petugas kebersihan belum mengangkut sampah di depan gapura selama seminggu sehingga menimbulkan bau.", kategori: "Kebersihan", tanggal: "20 Jun 2026", status: "Selesai", tanggapan: "Sudah diangkut oleh truk sampah kelurahan pada tanggal 21 Juni." }
+];
+
 export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [nominalIuran, setNominalIuranState] = useState(50000);
@@ -164,6 +186,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [transaksiBulanan, setTransaksiBulanan] = useState<TransaksiBulanan[]>(INITIAL_TRANSAKSI);
   const [transaksiList, setTransaksiList] = useState<Transaksi[]>(INITIAL_TRANSAKSI_LIST);
   const [notifications, setNotifications] = useState<Notification[]>(INITIAL_NOTIFICATIONS);
+  const [aduanList, setAduanList] = useState<Aduan[]>(INITIAL_ADUAN);
   const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
 
   // Load from localStorage on mount
@@ -211,6 +234,9 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
       const storedNotif = localStorage.getItem("wl_notifications");
       if (storedNotif) setNotifications(JSON.parse(storedNotif));
+
+      const storedAduan = localStorage.getItem("wl_aduanList");
+      if (storedAduan) setAduanList(JSON.parse(storedAduan));
 
       const storedUser = sessionStorage.getItem("wl_currentUser") || localStorage.getItem("wl_currentUser");
       if (storedUser) setCurrentUser(JSON.parse(storedUser));
@@ -312,6 +338,61 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     });
 
     tambahNotifikasi("Admin RT/RW", "Warga Baru Ditambahkan", `${newWarga.nama} terdaftar di RT ${newWarga.rt}.`);
+  };
+
+  const updateWarga = (id: number, updatedFields: Partial<Warga>) => {
+    setDaftarWarga((prev) => {
+      const updated = prev.map((w) => (w.id === id ? { ...w, ...updatedFields } : w));
+      saveToStorage("wl_daftarWarga", updated);
+      return updated;
+    });
+  };
+
+  const hapusWarga = (id: number) => {
+    setDaftarWarga((prev) => {
+      const updated = prev.filter((w) => w.id !== id);
+      saveToStorage("wl_daftarWarga", updated);
+      return updated;
+    });
+  };
+
+  const tambahAduan = (judul: string, deskripsi: string, kategori: string, pemohon: string, foto?: string) => {
+    setAduanList((prev) => {
+      const updated = [
+        {
+          id: Date.now(),
+          pemohon,
+          judul,
+          deskripsi,
+          kategori,
+          tanggal: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }),
+          status: "Diajukan" as const,
+          foto
+        },
+        ...prev
+      ];
+      saveToStorage("wl_aduanList", updated);
+      return updated;
+    });
+    tambahNotifikasi("Admin RT/RW", "Aduan Warga Baru", `${pemohon} melaporkan aduan: ${judul}.`);
+  };
+
+  const updateStatusAduan = (id: number, status: "Diajukan" | "Diproses" | "Selesai" | "Ditolak", tanggapan?: string) => {
+    let targetPemohon = "Warga";
+    let judulAduan = "";
+    setAduanList((prev) => {
+      const updated = prev.map((a) => {
+        if (a.id === id) {
+          targetPemohon = a.pemohon;
+          judulAduan = a.judul;
+          return { ...a, status, tanggapan };
+        }
+        return a;
+      });
+      saveToStorage("wl_aduanList", updated);
+      return updated;
+    });
+    tambahNotifikasi("Warga", "Status Aduan Diperbarui", `Aduan "${judulAduan}" Anda telah diperbarui menjadi: ${status}.`);
   };
 
   const tambahPengumuman = (judul: string, isi: string, tipe: string) => {
@@ -532,6 +613,8 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setNominalIuran,
         setIuranAktif,
         tambahWarga,
+        updateWarga,
+        hapusWarga,
         tambahPengumuman,
         hapusPengumuman,
         ajukanSurat,
@@ -545,6 +628,9 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         tambahNotifikasi,
         markNotifikasiRead,
         clearAllNotifikasi,
+        aduanList,
+        tambahAduan,
+        updateStatusAduan,
         isLoaded
       }}
     >
