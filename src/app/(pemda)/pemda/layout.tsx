@@ -96,7 +96,8 @@ export default function PemdaLayout({ children }: { children: ReactNode }) {
             color: #f8fafc !important;
             border-color: #334155 !important;
           }
-          .dark .bg-slate-50 {
+          .dark .bg-slate-50,
+          .dark .bg-slate-100 {
             background-color: #0f172a !important;
             color: #f8fafc !important;
           }
@@ -128,9 +129,13 @@ export default function PemdaLayout({ children }: { children: ReactNode }) {
             color: #f8fafc !important;
           }
           .dark .hover\\:bg-slate-50:hover,
+          .dark .hover\\:bg-slate-100:hover,
           .dark .hover\\:bg-white:hover {
             background-color: #334155 !important;
             color: #f8fafc !important;
+          }
+          .dark .hover\\:bg-red-50:hover {
+            background-color: rgba(239, 68, 68, 0.2) !important;
           }
           .dark table, 
           .dark tr,

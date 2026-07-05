@@ -26,6 +26,7 @@ export function AppLogo({
         fill
         sizes="96px"
         priority={priority}
+        unoptimized={true}
         className={cn("object-contain", imageClassName)}
       />
     </span>
