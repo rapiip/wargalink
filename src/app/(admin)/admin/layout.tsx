@@ -214,7 +214,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="hidden md:flex flex-col w-72 p-4 pr-0">
         <aside className="flex-1 bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl shadow-blue-900/5 rounded-3xl flex flex-col overflow-hidden">
           <div className="h-20 flex items-center px-8 border-b border-white/50 bg-white/40">
-            <AppLogo className="mr-3 h-9 w-10 rounded-lg shadow-md ring-1 ring-slate-200/70" />
+            <AppLogo className="mr-3 h-9 w-10" />
             <span className="text-xl font-extrabold text-slate-800 tracking-tight">WargaLink</span>
           </div>
           <nav className="flex-1 overflow-y-auto py-6 px-4">
@@ -237,7 +237,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="w-72 p-0 bg-white border-r border-slate-200">
           <SheetHeader className="h-20 flex flex-row items-center px-8 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
-            <AppLogo className="mr-3 h-9 w-10 rounded-lg shadow-md ring-1 ring-slate-200/70" />
+            <AppLogo className="mr-3 h-9 w-10" />
             <SheetTitle className="text-xl font-extrabold text-slate-800 tracking-tight">WargaLink</SheetTitle>
           </SheetHeader>
           <nav className="flex-1 overflow-y-auto py-6 px-4">
