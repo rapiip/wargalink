@@ -74,12 +74,12 @@ export default function AdminSurat() {
                   <TableCell>{surat.jenis}</TableCell>
                   <TableCell className="text-slate-500">{surat.tanggal}</TableCell>
                   <TableCell>
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className={
                         surat.status === "Menunggu" || surat.status === "Diproses RT" ? "bg-amber-100 text-amber-800 border-transparent" :
-                        surat.status === "Disetujui" || surat.status === "Selesai" ? "bg-emerald-100 text-emerald-800 border-transparent" :
-                        "bg-red-100 text-red-800 border-transparent"
+                          surat.status === "Disetujui" || surat.status === "Selesai" ? "bg-emerald-100 text-emerald-800 border-transparent" :
+                            "bg-red-100 text-red-800 border-transparent"
                       }
                     >
                       {surat.status === "Menunggu" ? "Diproses RT" : surat.status}

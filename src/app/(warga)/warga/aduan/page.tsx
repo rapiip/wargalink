@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, PlusCircle, CheckCircle2, ChevronRight, AlertCircle, Clock, Trash2, Camera, X } from "lucide-react";
@@ -59,24 +58,24 @@ export default function WargaAduan() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Diajukan":
-        return "bg-blue-50 text-blue-700 border-blue-250";
+        return "bg-blue-50 text-blue-700 border-blue-200";
       case "Diproses":
-        return "bg-amber-50 text-amber-700 border-amber-250";
+        return "bg-amber-50 text-amber-700 border-amber-200";
       case "Selesai":
-        return "bg-emerald-50 text-emerald-700 border-emerald-250";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
       case "Ditolak":
-        return "bg-red-50 text-red-700 border-red-250";
+        return "bg-red-50 text-red-700 border-red-200";
       default:
         return "";
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-transparent p-4 space-y-6 pb-24 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-transparent p-4 space-y-6 pb-24 relative">
       {/* Bottom Sheet Styles */}
       <style>{`
         .bottom-sheet-overlay {
-          position: absolute;
+          position: fixed;
           inset: 0;
           background-color: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(4px);
@@ -84,10 +83,12 @@ export default function WargaAduan() {
           animation: fadeIn 0.2s ease-out;
         }
         .bottom-sheet {
-          position: absolute;
+          position: fixed;
           bottom: 0;
-          left: 0;
-          right: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          max-width: 448px;
           background-color: white;
           border-top-left-radius: 1.5rem;
           border-top-right-radius: 1.5rem;
@@ -102,8 +103,8 @@ export default function WargaAduan() {
           to { opacity: 1; }
         }
         @keyframes slideUp {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
+          from { transform: translate(-50%, 100%); }
+          to { transform: translate(-50%, 0); }
         }
       `}</style>
 
@@ -300,7 +301,7 @@ export default function WargaAduan() {
                   <div className="relative">
                     <div className={`absolute -left-6 top-0 w-3.5 h-3.5 rounded-full border-2 border-white ${
                       selectedAduan.status === "Diproses" || selectedAduan.status === "Selesai"
-                        ? "bg-emerald-500 ring-2 ring-emerald-250"
+                        ? "bg-emerald-500 ring-2 ring-emerald-200"
                         : "bg-slate-200"
                     }`}></div>
                     <div>
@@ -313,7 +314,7 @@ export default function WargaAduan() {
                   <div className="relative">
                     <div className={`absolute -left-6 top-0 w-3.5 h-3.5 rounded-full border-2 border-white ${
                       selectedAduan.status === "Selesai"
-                        ? "bg-emerald-500 ring-2 ring-emerald-250"
+                        ? "bg-emerald-500 ring-2 ring-emerald-200"
                         : selectedAduan.status === "Ditolak"
                         ? "bg-red-500 ring-2 ring-red-200"
                         : "bg-slate-200"

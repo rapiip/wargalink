@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "lucide-react";
-import { useApp } from "@/context/AppContext";
+import { useApp, Pengumuman } from "@/context/AppContext";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function WargaPengumuman() {
   const { pengumumanList } = useApp();
-  const [selectedPengumuman, setSelectedPengumuman] = useState<any | null>(null);
+  const [selectedPengumuman, setSelectedPengumuman] = useState<Pengumuman | null>(null);
 
   const renderIllustration = (tipe: string) => {
     const gradients = {
@@ -49,7 +49,13 @@ export default function WargaPengumuman() {
 
       <div className="space-y-4 pb-12">
         {pengumumanList.length === 0 && (
-          <p className="text-sm text-slate-400 border border-dashed rounded-xl p-6 text-center">Belum ada pengumuman baru.</p>
+          <div className="text-center py-12 border border-dashed rounded-2xl bg-slate-50/60">
+            <div className="w-14 h-14 mx-auto bg-emerald-50 rounded-2xl flex items-center justify-center mb-3">
+              <Calendar className="w-7 h-7 text-emerald-400" />
+            </div>
+            <p className="text-sm font-bold text-slate-700">Belum ada pengumuman</p>
+            <p className="text-xs text-slate-400 mt-1 max-w-[16rem] mx-auto leading-relaxed">Pengurus RT belum menerbitkan pengumuman. Cek kembali nanti untuk info & agenda terbaru.</p>
+          </div>
         )}
         {pengumumanList.map((p) => (
           <Card 

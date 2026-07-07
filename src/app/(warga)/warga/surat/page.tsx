@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, ChevronRight, CheckCircle2, Clock, XCircle, Check, X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { FileText, ChevronRight, CheckCircle2, Clock, XCircle, Check, X, Inbox } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -105,7 +105,13 @@ export default function WargaSurat() {
         <h3 className="font-semibold text-slate-800 mb-3">Riwayat Pengajuan</h3>
         <div className="space-y-3 pb-12">
           {mySurat.length === 0 && (
-            <p className="text-sm text-slate-400 border border-dashed rounded-xl p-6 text-center">Belum ada riwayat pengajuan surat.</p>
+            <div className="text-center py-10 border border-dashed rounded-2xl bg-slate-50/60">
+              <div className="w-14 h-14 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center mb-3">
+                <Inbox className="w-7 h-7 text-blue-400" />
+              </div>
+              <p className="text-sm font-bold text-slate-700">Belum ada riwayat pengajuan</p>
+              <p className="text-xs text-slate-400 mt-1 max-w-[16rem] mx-auto leading-relaxed">Pilih jenis surat di atas untuk mengajukan surat pengantar pertama Anda ke Ketua RT.</p>
+            </div>
           )}
           {mySurat.map((surat) => {
             const isApproved = surat.status === "Selesai" || surat.status === "Disetujui";

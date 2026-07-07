@@ -42,7 +42,7 @@ export default function AdminKeuangan() {
       tx.tipe,
       tx.nominal
     ]);
-    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
       + [headers.join(","), ...rows.map((row) => row.map((val) => `"${val}"`).join(","))].join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -61,7 +61,7 @@ export default function AdminKeuangan() {
       t.nominal,
       iuranAktif ? t.status : "DITIADAKAN"
     ]);
-    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
       + [headers.join(","), ...rows.map((row) => row.map((val) => `"${val}"`).join(","))].join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -73,7 +73,7 @@ export default function AdminKeuangan() {
     toast.success("Laporan tagihan warga berhasil diekspor ke CSV!");
   };
   const [selectedBukti, setSelectedBukti] = useState<{ open: boolean; tagihan: any | null }>({ open: false, tagihan: null });
-  
+
   const [txTipe, setTxTipe] = useState("pemasukan");
   const [txNominal, setTxNominal] = useState("");
   const [txKeterangan, setTxKeterangan] = useState("");
@@ -206,14 +206,12 @@ export default function AdminKeuangan() {
                   <button
                     type="button"
                     onClick={() => setIuranAktif(!iuranAktif)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${
-                      iuranAktif ? "bg-blue-600" : "bg-slate-200"
-                    }`}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${iuranAktif ? "bg-blue-600" : "bg-slate-200"
+                      }`}
                   >
                     <span
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        iuranAktif ? "translate-x-5" : "translate-x-0"
-                      }`}
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${iuranAktif ? "translate-x-5" : "translate-x-0"
+                        }`}
                     />
                   </button>
                 </div>
@@ -320,8 +318,8 @@ export default function AdminKeuangan() {
                       <TableCell className="text-slate-500">{t.tagihan}</TableCell>
                       <TableCell className="font-bold">Rp {t.nominal.toLocaleString("id-ID")}</TableCell>
                       <TableCell>
-                        <span 
-                          className="text-xs text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100 font-medium cursor-pointer hover:bg-blue-100 transition-colors" 
+                        <span
+                          className="text-xs text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100 font-medium cursor-pointer hover:bg-blue-100 transition-colors"
                           onClick={() => setSelectedBukti({ open: true, tagihan: t })}
                         >
                           {t.buktiBayar}
@@ -509,7 +507,7 @@ export default function AdminKeuangan() {
               Detail transaksi transfer bank yang dikirimkan warga.
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedBukti.tagihan && (
             <div className="py-2">
               <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden font-sans relative text-slate-800 shadow-md">
@@ -574,17 +572,17 @@ export default function AdminKeuangan() {
               </div>
             </div>
           )}
-          
+
           <div className="flex justify-end gap-2 pt-2">
-            <Button 
-              variant="outline" 
-              className="rounded-xl w-full" 
+            <Button
+              variant="outline"
+              className="rounded-xl w-full"
               onClick={() => setSelectedBukti({ open: false, tagihan: null })}
             >
               Tutup
             </Button>
             {selectedBukti.tagihan && selectedBukti.tagihan.status === "Menunggu Verifikasi" && (
-              <Button 
+              <Button
                 className="bg-emerald-600 hover:bg-emerald-700 rounded-xl w-full"
                 onClick={() => {
                   handleVerifikasi(selectedBukti.tagihan.id, "Lunas", selectedBukti.tagihan.kk);

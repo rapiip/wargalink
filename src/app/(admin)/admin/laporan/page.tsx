@@ -126,7 +126,7 @@ export default function AdminLaporan() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             {
-              label: "Total Pemasukan", 
+              label: "Total Pemasukan",
               value: `Rp ${summary.pemasukan.toLocaleString("id-ID")}`,
               icon: TrendingUp, color: "emerald", bg: "bg-emerald-50", text: "text-emerald-700", icon_bg: "bg-emerald-100"
             },

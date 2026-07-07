@@ -95,20 +95,18 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <Link
               href={item.href}
               onClick={onNavigate}
-              className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                active
+              className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all duration-200 ${active
                   ? "bg-primary text-white shadow-md shadow-primary/30 translate-x-0"
                   : "text-slate-600 hover:bg-white hover:shadow-sm hover:text-primary hover:translate-x-1"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <Icon className="w-5 h-5 shrink-0" />
                 {item.name}
               </div>
               {item.badge && pendingAduanCount > 0 && (
-                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
-                  active ? "bg-white text-primary" : "bg-red-500 text-white"
-                }`}>
+                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${active ? "bg-white text-primary" : "bg-red-500 text-white"
+                  }`}>
                   {pendingAduanCount}
                 </span>
               )}
@@ -122,7 +120,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className={`min-h-screen bg-transparent flex ${theme === "dark" ? "dark bg-slate-900" : "bg-slate-50"}`}>
       {theme === "dark" && (
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style dangerouslySetInnerHTML={{
+          __html: `
           .dark {
             background-color: #0b0f19 !important;
           }
@@ -314,9 +313,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         <div
                           key={n.id}
                           onClick={() => { markNotifikasiRead(n.id); setShowNotif(false); }}
-                          className={`p-2.5 rounded-xl transition-colors cursor-pointer text-xs ${
-                            n.read ? "bg-slate-50 text-slate-500" : "bg-blue-50/50 text-slate-800 font-medium hover:bg-blue-50 border-l-2 border-primary"
-                          }`}
+                          className={`p-2.5 rounded-xl transition-colors cursor-pointer text-xs ${n.read ? "bg-slate-50 text-slate-500" : "bg-blue-50/50 text-slate-800 font-medium hover:bg-blue-50 border-l-2 border-primary"
+                            }`}
                         >
                           <div className="flex justify-between items-start">
                             <span className="font-bold">{n.title}</span>

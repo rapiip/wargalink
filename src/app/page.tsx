@@ -58,7 +58,7 @@ export default function LoginPage() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-start justify-center px-4 pb-12 pt-14 sm:pt-16 lg:pt-20 relative overflow-hidden">
       {/* Animated background orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-5%] w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
@@ -76,7 +76,7 @@ export default function LoginPage() {
         >
           <AppLogo
             priority
-            className="mx-auto mb-4 h-20 w-24 rounded-2xl shadow-2xl shadow-blue-600/20 ring-1 ring-white/80"
+            className="mx-auto mb-4 h-20 w-24"
           />
           <h1 className="text-4xl font-black text-slate-800 tracking-tight">WargaLink</h1>
           <p className="text-slate-500 font-medium mt-1">Platform Digital Administrasi RT/RW</p>

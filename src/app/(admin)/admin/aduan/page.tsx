@@ -10,13 +10,14 @@ import { useState } from "react";
 import { useApp, Warga, Aduan } from "@/context/AppContext";
 import { toast } from "sonner";
 import { MessageSquare, AlertCircle, CheckCircle, Clock, Eye, XOctagon } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminAduan() {
   const { aduanList, updateStatusAduan } = useApp();
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterKategori, setFilterKategori] = useState("all");
   const [selectedAduan, setSelectedAduan] = useState<{ open: boolean; aduan: Aduan | null }>({ open: false, aduan: null });
-  
+
   // Tanggapan form state
   const [tanggapanText, setTanggapanText] = useState("");
 
@@ -39,7 +40,7 @@ export default function AdminAduan() {
     updateStatusAduan(id, status, tanggapanText);
     setSelectedAduan({ open: false, aduan: null });
     setTanggapanText("");
-    
+
     if (status === "Diproses") {
       toast.success("Aduan warga mulai diproses.");
     } else if (status === "Selesai") {
@@ -154,7 +155,7 @@ export default function AdminAduan() {
             <DialogTitle className="text-xl font-bold text-slate-800">Tinjau Laporan Warga</DialogTitle>
             <DialogDescription>Keluhan lingkungan warga yang memerlukan respon RT.</DialogDescription>
           </DialogHeader>
-          
+
           {selectedAduan.aduan && (
             <div className="space-y-4 py-2">
               <div className="flex justify-between items-center">
@@ -163,7 +164,7 @@ export default function AdminAduan() {
                 </span>
                 <span className="text-xs text-slate-500 font-semibold">{selectedAduan.aduan.tanggal}</span>
               </div>
-              
+
               <div>
                 <h4 className="text-lg font-black text-slate-800 leading-snug">{selectedAduan.aduan.judul}</h4>
                 <p className="text-xs text-slate-500 mt-0.5">Dilaporkan oleh: <strong className="text-slate-700">{selectedAduan.aduan.pemohon}</strong></p>
@@ -173,11 +174,22 @@ export default function AdminAduan() {
                 {selectedAduan.aduan.deskripsi}
               </div>
 
-              {/* Mock Image Attachment */}
-              <div className="bg-slate-100 rounded-2xl p-4 border border-dashed flex flex-col items-center justify-center text-slate-400">
-                <AlertCircle className="w-8 h-8 text-slate-300 mb-1" />
-                <span className="text-xs font-semibold">Lampiran Gambar Terverifikasi</span>
-                <span className="text-[10px] text-slate-400 mt-0.5">foto_aduan_kamera_warga.png (Simulated)</span>
+              {/* Image Attachment */}
+              <div className="bg-slate-100 rounded-2xl overflow-hidden border">
+                {selectedAduan.aduan.id === 1 ? (
+                  <div className="relative w-full h-48">
+                    <Image src="/foto_aduan_mati_lampu.png" alt="Lampu jalan mati" fill className="object-cover" />
+                  </div>
+                ) : selectedAduan.aduan.id === 2 ? (
+                  <div className="relative w-full h-48">
+                    <Image src="/foto_aduan_kamera_warga.png" alt="Sampah menumpuk" fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="p-4 border-dashed flex flex-col items-center justify-center text-slate-400 h-48">
+                    <AlertCircle className="w-8 h-8 text-slate-300 mb-1" />
+                    <span className="text-xs font-semibold">Tidak Ada Lampiran Gambar</span>
+                  </div>
+                )}
               </div>
 
               {/* Status & Tanggapan input */}
@@ -220,7 +232,7 @@ export default function AdminAduan() {
                   Tutup
                 </Button>
                 {selectedAduan.aduan.status === "Diajukan" && (
-                  <Button 
+                  <Button
                     className="bg-amber-500 hover:bg-amber-600 rounded-xl flex-1 font-bold text-white shadow shadow-amber-500/10"
                     onClick={() => handleUpdateStatus(selectedAduan.aduan!.id, "Diproses")}
                   >
@@ -230,7 +242,7 @@ export default function AdminAduan() {
                 )}
                 {selectedAduan.aduan.status === "Diproses" && (
                   <div className="flex gap-2 w-full mt-2 sm:mt-0 sm:w-auto">
-                    <Button 
+                    <Button
                       variant="destructive"
                       className="rounded-xl flex-1 font-bold text-white shadow shadow-red-500/10"
                       onClick={() => handleUpdateStatus(selectedAduan.aduan!.id, "Ditolak")}
@@ -238,7 +250,7 @@ export default function AdminAduan() {
                       <XOctagon className="w-4 h-4 mr-1.5" />
                       Tolak
                     </Button>
-                    <Button 
+                    <Button
                       className="bg-emerald-600 hover:bg-emerald-700 rounded-xl flex-1 font-bold text-white shadow shadow-emerald-500/10"
                       onClick={() => handleUpdateStatus(selectedAduan.aduan!.id, "Selesai")}
                     >

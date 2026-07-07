@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Wallet, Bell, Clock, FileText, ArrowRight, MessageSquare, Check } from "lucide-react";
+import { Wallet, Bell, Clock, FileText, ArrowRight, MessageSquare, Check, Calendar } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StaggerContainer, StaggerItem } from "@/components/ui/animated-container";
@@ -10,11 +10,11 @@ import { useApp } from "@/context/AppContext";
 
 export default function WargaHome() {
   const router = useRouter();
-  const { nominalIuran, iuranAktif, tagihanList, suratList, currentUser } = useApp();
+  const { nominalIuran, iuranAktif, tagihanList, suratList, currentUser, pengumumanList } = useApp();
 
   const pemohonNama = currentUser ? currentUser.desc.split(",")[0].trim() : "Budi Santoso";
   const myTagihan = tagihanList.find((t) => t.kk === pemohonNama && t.tagihan === "Iuran Juni 2026") || {
-    id: Date.now(),
+    id: 0,
     kk: pemohonNama,
     tagihan: "Iuran Juni 2026",
     nominal: nominalIuran,
@@ -23,6 +23,7 @@ export default function WargaHome() {
 
   const mySurat = suratList.filter((s) => s.pemohon === pemohonNama);
   const latestSurat = mySurat[0] || null;
+  const latestPengumuman = pengumumanList.slice(0, 2);
 
   const handleBayar = () => {
     router.push("/warga/iuran");
@@ -169,6 +170,50 @@ export default function WargaHome() {
           ) : (
             <p className="text-sm text-slate-400 border border-dashed rounded-2xl p-6 text-center bg-white/60">Belum ada aktivitas surat-menyurat.</p>
           )}
+        </StaggerItem>
+
+        <StaggerItem>
+          <div className="flex items-center justify-between pt-2 pb-2">
+            <h3 className="font-bold text-slate-800 tracking-tight">Info Terbaru RT</h3>
+            <Link href="/warga/pengumuman" className="text-xs text-primary font-bold flex items-center hover:underline">
+              Lihat Semua <ArrowRight className="w-3 h-3 ml-1" />
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {latestPengumuman.map((p) => {
+              const tipeColor = p.tipe === "Penting"
+                ? "bg-red-50 text-red-600 border-red-100"
+                : p.tipe === "Agenda"
+                ? "bg-blue-50 text-blue-600 border-blue-100"
+                : "bg-emerald-50 text-emerald-600 border-emerald-100";
+              return (
+                <Link
+                  key={p.id}
+                  href="/warga/pengumuman"
+                  className="block bg-white/90 backdrop-blur-sm p-4 rounded-2xl border border-white/60 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`p-2.5 rounded-xl border ${tipeColor} shrink-0`}>
+                      <Calendar className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${tipeColor} border`}>
+                          {p.tipe}
+                        </span>
+                        <span className="text-[11px] text-slate-400 font-medium">{p.tanggal}</span>
+                      </div>
+                      <p className="font-bold text-slate-800 text-sm mt-1.5 leading-tight">{p.judul}</p>
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">{p.isi}</p>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+            {latestPengumuman.length === 0 && (
+              <p className="text-sm text-slate-400 border border-dashed rounded-2xl p-6 text-center bg-white/60">Belum ada pengumuman dari RT.</p>
+            )}
+          </div>
         </StaggerItem>
       </StaggerContainer>
     </div>

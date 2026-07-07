@@ -109,27 +109,26 @@ export default function AdminPengumuman() {
               <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">
                 <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
               </div>
-              
+
               {/* Days Grid */}
               <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold">
                 <span className="text-slate-300 py-1.5">31</span>
                 {[...Array(30)].map((_, index) => {
                   const day = index + 1;
                   const hasEvent = day === 7 || day === 14;
-                  const eventTitle = day === 7 
-                    ? "Pemadaman Listrik PLN (09:00 - 12:00 WIB)" 
-                    : day === 14 
-                    ? "Kerja Bakti Rutin Lingkungan RT (07:00 WIB)" 
-                    : "";
-                  
+                  const eventTitle = day === 7
+                    ? "Pemadaman Listrik PLN (09:00 - 12:00 WIB)"
+                    : day === 14
+                      ? "Kerja Bakti Rutin Lingkungan RT (07:00 WIB)"
+                      : "";
+
                   return (
-                    <div 
-                      key={day} 
-                      className={`py-1.5 rounded-lg flex items-center justify-center cursor-pointer transition-all ${
-                        hasEvent 
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 font-bold scale-105" 
+                    <div
+                      key={day}
+                      className={`py-1.5 rounded-lg flex items-center justify-center cursor-pointer transition-all ${hasEvent
+                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 font-bold scale-105"
                           : "hover:bg-slate-100 text-slate-700"
-                      }`}
+                        }`}
                       title={eventTitle}
                       onClick={() => {
                         if (hasEvent) {
@@ -160,39 +159,38 @@ export default function AdminPengumuman() {
               <p className="text-sm text-slate-400 border border-dashed rounded-xl p-6 text-center">Belum ada pengumuman. Buat pengumuman pertama di sebelah kiri.</p>
             )}
             {pengumumanList.map((p) => (
-            <Card key={p.id} className="relative group overflow-hidden">
-              {p.tipe === "Penting" && <div className="h-1 bg-red-500 w-full" />}
-              {p.tipe === "Agenda" && <div className="h-1 bg-blue-500 w-full" />}
-              {p.tipe === "Info" && <div className="h-1 bg-emerald-500 w-full" />}
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start pr-6">
-                  <CardTitle className="text-base text-slate-800">{p.judul}</CardTitle>
-                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
-                    p.tipe === "Penting" ? "bg-red-50 text-red-700 border-red-200" :
-                    p.tipe === "Agenda" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                    "bg-emerald-50 text-emerald-700 border-emerald-200"
-                  }`}>
-                    {p.tipe || "Info"}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground">{p.tanggal}</p>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-slate-600 leading-relaxed">{p.isi}</p>
-              </CardContent>
-              <button
-                onClick={() => handleHapus(p.id, p.judul)}
-                className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-lg"
-                title="Hapus pengumuman"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </Card>
-          ))}
+              <Card key={p.id} className="relative group overflow-hidden">
+                {p.tipe === "Penting" && <div className="h-1 bg-red-500 w-full" />}
+                {p.tipe === "Agenda" && <div className="h-1 bg-blue-500 w-full" />}
+                {p.tipe === "Info" && <div className="h-1 bg-emerald-500 w-full" />}
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start pr-6">
+                    <CardTitle className="text-base text-slate-800">{p.judul}</CardTitle>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${p.tipe === "Penting" ? "bg-red-50 text-red-700 border-red-200" :
+                        p.tipe === "Agenda" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                          "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      }`}>
+                      {p.tipe || "Info"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{p.tanggal}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-slate-600 leading-relaxed">{p.isi}</p>
+                </CardContent>
+                <button
+                  onClick={() => handleHapus(p.id, p.judul)}
+                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-lg"
+                  title="Hapus pengumuman"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
   );
 }
 

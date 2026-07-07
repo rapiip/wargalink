@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Shield, MapPin, Bell, LogOut, ChevronRight, Check, FileText, X, Lightbulb } from "lucide-react";
+import { User, Shield, MapPin, Bell, LogOut, ChevronRight, FileText, X, Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -370,7 +370,7 @@ export default function WargaProfil() {
             </div>
             <form onSubmit={handleSaveKeamanan} className="space-y-4 py-2">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-650">PIN Lama</label>
+                <label className="text-xs font-semibold text-slate-600">PIN Lama</label>
                 <input 
                   type="password" 
                   maxLength={6}
@@ -382,7 +382,7 @@ export default function WargaProfil() {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-650">PIN Baru</label>
+                <label className="text-xs font-semibold text-slate-600">PIN Baru</label>
                 <input 
                   type="password" 
                   maxLength={6}
@@ -438,7 +438,7 @@ export default function WargaProfil() {
 
             {activeDocTab === "ktp" && (
               <div className="py-2 flex flex-col items-center justify-center">
-                <p className="text-[10px] text-slate-450 mb-3 font-semibold flex items-center gap-1">
+                <p className="text-[10px] text-slate-500 mb-3 font-semibold flex items-center gap-1">
                   <Lightbulb className="w-3 h-3 text-amber-500" /> Klik kartu untuk melihat bagian belakang
                 </p>
 
@@ -474,7 +474,7 @@ export default function WargaProfil() {
                           {/* Fields */}
                           <div className="flex-1 text-[7px] space-y-0.5 leading-snug">
                             <div className="flex items-center gap-1 mb-1">
-                              <span className="text-[8px] font-black tracking-wider text-sky-150">NIK :</span>
+                              <span className="text-[8px] font-black tracking-wider text-sky-200">NIK :</span>
                               <span className="text-[8.5px] font-black tracking-wider font-mono">3171230101800001</span>
                             </div>
                             {[
@@ -513,8 +513,8 @@ export default function WargaProfil() {
                           {/* Smart Card Chip */}
                           <div className="w-9 h-7 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-md border border-amber-600/30 flex flex-col justify-between p-1 shadow-inner relative overflow-hidden">
                             <div className="flex justify-between h-1">
-                              <div className="w-[1.5px] bg-amber-850/40 h-full"></div>
-                              <div className="w-[1.5px] bg-amber-850/40 h-full"></div>
+                              <div className="w-[1.5px] bg-amber-800/40 h-full"></div>
+                              <div className="w-[1.5px] bg-amber-800/40 h-full"></div>
                             </div>
                             <div className="h-0.5 bg-amber-800/45 w-full"></div>
                             <div className="flex justify-between h-1">

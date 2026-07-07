@@ -20,7 +20,7 @@ function PreviewSuratContent() {
       toast.loading("Membuat file PDF...", { id: "pdf-gen" });
       await generateAndOpenPDF(`${jenis.replace(/\s+/g, "_")}_WargaLink.pdf`);
       toast.success("PDF berhasil dibuat! Cek tab baru.", { id: "pdf-gen" });
-    } catch (e) {
+    } catch {
       toast.error("Gagal membuat PDF. Coba lagi.", { id: "pdf-gen" });
     } finally {
       setLoading(false);

@@ -24,9 +24,9 @@ export default function AdminDashboard() {
 
   // Dynamic calculations
   const totalWargaCount = 138 + daftarWarga.length; // Realistic mapping from dummy data
-  
+
   const juniPemasukan = transaksiBulanan.find((t) => t.name === "Jun")?.pemasukan || 0;
-  
+
   const pendingSuratCount = suratList.filter(
     (s) => s.status === "Menunggu" || s.status === "Diproses RT"
   ).length;

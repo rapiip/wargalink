@@ -4,7 +4,7 @@ import "./globals.css";
 import { AppContextProvider } from "@/context/AppContext";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${plusJakartaSans.variable} font-sans h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

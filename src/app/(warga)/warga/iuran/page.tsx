@@ -20,7 +20,7 @@ export default function WargaIuran() {
 
   const wargaNama = currentUser ? currentUser.desc.split(",")[0].trim() : "Budi Santoso";
   const myTagihan = tagihanList.find((t) => t.kk === wargaNama && t.tagihan === "Iuran Juni 2026") || {
-    id: Date.now(),
+    id: 0,
     kk: wargaNama,
     tagihan: "Iuran Juni 2026",
     nominal: nominalIuran,
